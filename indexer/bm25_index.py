@@ -4,7 +4,7 @@ import threading
 from rank_bm25 import BM25Okapi
 
 class BM25Index:
-    def __init__(self, save_path="./index/bm25.pkl"):
+    def __init__(self, save_path="./index/bm25_geo_documents.pkl"):
         self.save_path = save_path
         self.corpus = []
         self.metadata = []
@@ -28,7 +28,7 @@ class BM25Index:
                 return []
             tokenized_query = query.split(" ")
             scores = self.bm25.get_scores(tokenized_query)
-            
+
             top_n = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:top_k]
             results = []
             for i in top_n:
@@ -47,11 +47,11 @@ class BM25Index:
             try:
                 with open(self.save_path, "rb") as f:
                     data = pickle.load(f)
-                    self.corpus = data["corpus"]
-                    self.metadata = data["metadata"]
-                    if self.corpus:
-                        tokenized_corpus = [doc.split(" ") for doc in self.corpus]
-                        self.bm25 = BM25Okapi(tokenized_corpus)
+                self.corpus = data["corpus"]
+                self.metadata = data["metadata"]
+                if self.corpus:
+                    tokenized_corpus = [doc.split(" ") for doc in self.corpus]
+                    self.bm25 = BM25Okapi(tokenized_corpus)
             except Exception as e:
                 # Corrupted pickle
                 print(f"BM25 corrupted, rebuilding: {e}")
