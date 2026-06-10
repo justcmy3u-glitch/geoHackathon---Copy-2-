@@ -1,0 +1,42 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# === Virtual Environments ===
+venv/
+.venv/
+env/
+
+# === IDE ===
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# === Environment & Secrets ===
+.env
+secrets/
+
+# === Data & Storage (Docker volumes) ===
+cache/
+documents/
+index/
+qdrant_storage/
+neo4j_data/
+pg_data/
+
+# === Runtime Output ===
+reports/
+logs/
+
+# === OS ===
+.DS_Store
+Thumbs.db
+desktop.ini

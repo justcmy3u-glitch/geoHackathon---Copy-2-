@@ -1,0 +1,44 @@
+# === Document Processing ===
+pymupdf>=1.24.0
+docling
+pdf2image
+Pillow
+
+# === Computer Vision ===
+opencv-python-headless
+
+# === Vector & Graph Databases ===
+qdrant-client
+neo4j
+psycopg2-binary
+
+# === Search & Embeddings ===
+rank_bm25
+FlagEmbedding
+
+# === Web UI ===
+streamlit
+pyvis
+
+# === API Framework ===
+fastapi
+uvicorn
+python-multipart
+slowapi
+
+# === HTTP & Data ===
+requests
+pydantic
+
+# === Security & Auth ===
+python-jose[cryptography]
+bcrypt
+cryptography
+
+# === Logging ===
+structlog
+
+# === Utilities ===
+filelock
+python-magic
+streamlit-authenticator

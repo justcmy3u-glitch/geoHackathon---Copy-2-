@@ -1,0 +1,28 @@
+.git
+.env
+__pycache__
+*.pyc
+*.py[cod]
+
+# Data & Storage
+cache/
+documents/
+index/
+qdrant_storage/
+neo4j_data/
+pg_data/
+secrets/
+models/
+
+# Runtime Output
+reports/
+logs/
+
+# Virtual Environments
+venv/
+.venv/
+env/
+
+# IDE
+.idea/
+.vscode/
