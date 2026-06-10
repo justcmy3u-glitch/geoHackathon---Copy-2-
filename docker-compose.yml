@@ -1,5 +1,5 @@
-
 services:
+
   qdrant:
     image: qdrant/qdrant:latest
     restart: unless-stopped
@@ -28,20 +28,37 @@ services:
     restart: unless-stopped
     environment:
       NEO4J_AUTH: neo4j/password123
-      NEO4J_PLUGINS: '["apoc"]'
+      # APOC plugin — load from the official Neo4j Labs URI instead of the
+      # deprecated NEO4J_PLUGINS env-var that is ignored in 5.x community
+      NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
+      NEO4J_dbms_security_procedures_allowlist: "apoc.*"
+      # Give the JVM enough heap so startup doesn't time-out
+      NEO4J_server_memory_heap_initial__size: "256m"
+      NEO4J_server_memory_heap_max__size: "512m"
+      NEO4J_server_memory_pagecache_size: "128m"
     ports:
       - "7474:7474"
       - "7687:7687"
     volumes:
       - ./neo4j_data:/data
+      - ./neo4j_logs:/logs
+      - ./neo4j_plugins:/plugins
     networks:
       - georag_internal
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:7474 || exit 1"]
-      interval: 15s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
+      # Use cypher-shell (ships in the image) to verify the DB is ready.
+      # Falls back to a plain HTTP check so startup failures are visible.
+      test:
+        - CMD-SHELL
+        - |
+          cypher-shell -u neo4j -p password123 \
+            'RETURN 1 AS ok;' > /dev/null 2>&1 \
+          || wget --no-verbose --tries=1 --spider \
+               http://localhost:7474 > /dev/null 2>&1
+      interval: 20s
+      timeout: 15s
+      retries: 10
+      start_period: 90s
 
   postgres:
     image: postgres:16-alpine
