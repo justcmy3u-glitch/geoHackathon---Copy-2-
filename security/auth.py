@@ -11,30 +11,43 @@ def get_authenticator(config_path="secrets/auth.yaml"):
     """
     # Create default config if not exists
     os.makedirs(os.path.dirname(config_path), exist_ok=True)
-    if not os.path.exists(config_path):
-        # Default user: admin / admin123
-        hashed_password = bcrypt.hashpw("admin123".encode(), bcrypt.gensalt()).decode()
-        default_config = {
-            "credentials": {
-                "usernames": {
-                    "admin": {
-                        "name": "Admin",
-                        "password": hashed_password,
-                        "role": "admin"
-                    }
+    
+    hashed_password = bcrypt.hashpw("admin123".encode(), bcrypt.gensalt()).decode()
+    default_config = {
+        "credentials": {
+            "usernames": {
+                "admin": {
+                    "name": "Admin",
+                    "password": hashed_password,
+                    "role": "admin"
                 }
-            },
-            "cookie": {
-                "expiry_days": 1,
-                "key": "georag_cookie_secret",
-                "name": "georag_auth_cookie"
-            },
-        }
+            }
+        },
+        "cookie": {
+            "expiry_days": 1,
+            "key": "georag_cookie_secret",
+            "name": "georag_auth_cookie"
+        },
+    }
+    
+    if not os.path.exists(config_path):
         with open(config_path, 'w') as file:
             yaml.dump(default_config, file, default_flow_style=False)
 
-    with open(config_path) as file:
-        config = yaml.load(file, Loader=SafeLoader)
+    # Load config
+    try:
+        with open(config_path) as file:
+            config = yaml.load(file, Loader=SafeLoader)
+        
+        # If config is None or empty, use default
+        if not config or 'credentials' not in config:
+            config = default_config
+            # Rewrite file with valid config
+            with open(config_path, 'w') as file:
+                yaml.dump(default_config, file, default_flow_style=False)
+    except Exception as e:
+        print(f"Error loading auth config: {e}. Using default.")
+        config = default_config
 
     authenticator = stauth.Authenticate(
         config['credentials'],
