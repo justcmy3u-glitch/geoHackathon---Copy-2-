@@ -8,6 +8,7 @@ from security.audit_logger import log_event
 from retriever.query_classifier import QueryClassifier
 from retriever.hybrid_rag import HybridRAG
 from generator.colab_client import ColabClient
+from generator.openai_client import OpenAIClient
 
 APP_NAME = "KMG GeoEvidence Copilot"
 
@@ -478,12 +479,9 @@ if st.session_state.get("authentication_status"):
                 with st.chat_message("assistant"):
                     if colab_url and hits:
                         context = "\n\n".join([h.get("content", "")[:400] for h in hits[:4]])
-                        client = ColabClient()
                         response = client.generate_answer(context, valid_query)
                         st.markdown(response)
                     else:
-                        st.markdown(_build_answer(valid_query, hits))
-                    st.caption(f"Режим: `{mode}` · Найдено фрагментов: {len(hits)}")
 
                 if hits:
                     with st.expander(f"Источники ({len(hits)} фрагментов)", expanded=True):
