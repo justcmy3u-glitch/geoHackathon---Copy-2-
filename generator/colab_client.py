@@ -150,3 +150,26 @@ class ColabClient:
             return resp.json().get("markdown", "")
         except requests.exceptions.RequestException as e:
             return f"OCR error: {str(e)}"
+
+    # ------------------------------------------------------------------
+    # Convenience aliases used in tests and pipeline code
+    # ------------------------------------------------------------------
+
+    def health_check(self) -> dict:
+        """
+        Ping the Colab server and return its status.
+        Raises requests.exceptions.RequestException if unreachable.
+        """
+        if not self._is_configured():
+            raise RuntimeError("COLAB_API_URL не настроен.")
+        resp = requests.get(
+            f"{self.colab_url}/health",
+            headers=self._headers(),
+            timeout=(5, 10),
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+    def generate(self, question: str, context: str = "") -> str:
+        """Alias for generate_answer(context, question) — used in tests."""
+        return self.generate_answer(context=context, question=question)
