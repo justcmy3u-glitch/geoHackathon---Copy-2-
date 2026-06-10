@@ -34,6 +34,7 @@ pydantic
 python-jose[cryptography]
 bcrypt
 cryptography
+openai>=1.0.0
 
 # === Logging ===
 structlog
