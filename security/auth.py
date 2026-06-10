@@ -4,6 +4,7 @@ import streamlit_authenticator as stauth
 import yaml
 from yaml.loader import SafeLoader
 
+
 def get_authenticator(config_path="secrets/auth.yaml"):
     """
     Load Streamlit Authenticator config.
@@ -28,7 +29,6 @@ def get_authenticator(config_path="secrets/auth.yaml"):
                 "key": "georag_cookie_secret",
                 "name": "georag_auth_cookie"
             },
-            "preauthorized": {"emails": []}
         }
         with open(config_path, 'w') as file:
             yaml.dump(default_config, file, default_flow_style=False)
@@ -41,13 +41,14 @@ def get_authenticator(config_path="secrets/auth.yaml"):
         config['cookie']['name'],
         config['cookie']['key'],
         config['cookie']['expiry_days'],
-        config['preauthorized']
     )
     return authenticator, config
+
 
 def save_auth_config(config, config_path="secrets/auth.yaml"):
     with open(config_path, 'w') as file:
         yaml.dump(config, file, default_flow_style=False)
+
 
 # JWT Auth (If local FastAPI is used)
 from fastapi.security import HTTPBearer
